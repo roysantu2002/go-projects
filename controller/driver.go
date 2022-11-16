@@ -70,9 +70,23 @@ func ConnectDB() *sql.DB {
 
 
 	db, err := sql.Open("mssql", connectionString)
+	// db, err := sql.Connect("mssql", connectionString)
+
 	if err != nil {
-		panic(err.Error())
+		log.Fatalf("could not connect to database: %v", err)
 	}
+
+	// To verify the connection to our database instance, we can call the `Ping`
+	// method. If no error is returned, we can assume a successful connection
+	if err := db.Ping(); err != nil {
+		log.Fatalf("unable to reach database: %v", err)
+	}
+	fmt.Println("database is reachable")
+
+
+	// if err != nil {
+	// 	panic(err.Error())
+	// }
 
 	return db
 }

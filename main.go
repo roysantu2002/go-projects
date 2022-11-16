@@ -9,9 +9,16 @@ import (
 	"test.com/packages/controller"
 	// "os"
 	  "log"
-	"encoding/json"
-	"io/ioutil"
+	// "encoding/json"
+	// "io/ioutil"
 )
+
+type User struct {
+	// ID        int             `db:"id"`
+	// FirstName sql.NullString  `db:"first_name"`
+	loginName  string          `db:"loginname"`
+	// Balance   sql.NullFloat64 `db:"balance"`
+}
 
 func printSlice(s []string) {
 	fmt.Printf("len=%d cap=%d %v\n", len(s), cap(s), s)
@@ -39,36 +46,54 @@ var connectionError error
 func main() {
 	// var err error
 
-	var slice []string // Create an empty slice of type int.
+	// var slice []string // Create an empty slice of type int.
 
 	db := controller.ConnectDB()
 	// fmt.Println(db)
 
 	//  var version string
-
-    res, err2 := db.Query("select loginname from master.sys.syslogins")
+	// Select for multiple values
+	// users := []User{}
+    rows, err2 := db.Query("select loginname from master.sys.syslogins")
 
     if err2 != nil {
         log.Fatal(err2)
     }
 
-    defer res.Close()
+	for rows.Next() {
+		// our query
+		// user := User{}
+		dbname := dbname{}
+		// if err := rows.Scan(&dbname.name); err != nil {
+		if err := rows.Scan(&loginname); err != nil {
+			log.Fatalf("could not scan row: %v", err)
+		}
+		dbname.name = loginname
+		dbname.server = "teston"
+		fmt.Printf("found loginname: %+v\n", dbname)
+
+	}
+
+	// s := User{}
+  	// err2 = structScan(rows, &s)
+    // defer res.Close()
 //
 //     if err != nil {
 //         log.Fatal(err)
 //     }
 
-
-    var data dbname
-    for res.Next() {
-		  err := res.Scan(&loginname)
-        if err != nil {
-            log.Fatal(err)
-        }
-
-        // fmt.Printf("", loginname)
-		data.server = "test"
-		data.name = loginname
+// 	fmt.Println(users)
+//     var data dbname
+//     for res.Next() {
+// 		  err := res.Scan(&loginname)
+//         if err != nil {
+//             log.Fatal(err)
+//         }
+//
+//         // fmt.Printf("", loginname)
+// 		data := dbname{loginname, loginname}
+		// data.server = "test"
+		// data.name = loginname
 		// slice = append(slice, loginname)
 		// data = DBLoginname{server : "test1", loginname: loginname}
 
@@ -82,7 +107,7 @@ func main() {
 
 
 //
-// 		fmt.Printf(res)
+		// fmt.Printf(data)
 //
 //         var loginName newSlice
 //         err := res.Scan(&loginName.loginname)
@@ -94,19 +119,22 @@ func main() {
         // fmt.Printf("%v\n", loginName)
 		// add an element to the slice
     	// newSlice = append(res, "e")
+		// fmt.Println(s)
+
+// 		file, _ := json.MarshalIndent(users, "", " ")
+//
+// 		_ = ioutil.WriteFile("test.json", file, 0644)
     }
 
-	fmt.Println(data)
-	j, err := json.Marshal(slice)
-    if err != nil {
-        fmt.Printf("Error: %s", err.Error())
-    } else {
-        fmt.Println(string(j))
-    }
 
-	file, _ := json.MarshalIndent(data, "", " ")
+// 	j, err := json.Marshal(slice)
+//     if err != nil {
+//         fmt.Printf("Error: %s", err.Error())
+//     } else {
+//         fmt.Println(string(j))
+//     }
+//
 
-	_ = ioutil.WriteFile("test.json", file, 0644)
 
 	// fmt.Println(slice)
 //
@@ -191,4 +219,3 @@ func main() {
 // 		default:
 // 		 fmt.Printf("-> Option: %v is not a valid numeric option. Try 1 , 2 , 3", userChoice)
 // 	}
-}
