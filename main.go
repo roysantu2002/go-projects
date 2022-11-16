@@ -9,15 +9,18 @@ import (
 	"test.com/packages/controller"
 	// "os"
 	  "log"
-	// "encoding/json"
-	// "io/ioutil"
+	"encoding/json"
+	"io/ioutil"
+	"bytes"
 )
 
 type User struct {
 	// ID        int             `db:"id"`
 	// FirstName sql.NullString  `db:"first_name"`
-	loginName  string          `db:"loginname"`
+	// loginName  string          `db:"loginname"`
 	// Balance   sql.NullFloat64 `db:"balance"`
+	serverName string `json:"serverName"`
+	loginName  string
 }
 
 func printSlice(s []string) {
@@ -30,23 +33,39 @@ func printSlice(s []string) {
 // }
 
 type dbname struct {
-		server string
-        name string
+		server string `json:"serverName"`
+        name map[int]string `json:"name"`
     }
 
 
 var (
 
 	loginname string
+	counter int
 )
+
+
 
 var connectionError error
 // var database *sql.DB
+
+func PrettyString(str string) (string, error) {
+    var prettyJSON bytes.Buffer
+    if err := json.Indent(&prettyJSON, []byte(str), "", "    "); err != nil {
+        return "", err
+    }
+    return prettyJSON.String(), nil
+}
 
 func main() {
 	// var err error
 
 	// var slice []string // Create an empty slice of type int.
+	 // initialize a slice literal
+	// newSlice := []string
+	  // Creating nil slice
+    var newSlice []string
+	userDetails := map[int]string{}
 
 	db := controller.ConnectDB()
 	// fmt.Println(db)
@@ -60,19 +79,78 @@ func main() {
         log.Fatal(err2)
     }
 
+
+
+
+
+
 	for rows.Next() {
+
 		// our query
 		// user := User{}
-		dbname := dbname{}
+
+		// dbname := dbname{}
 		// if err := rows.Scan(&dbname.name); err != nil {
 		if err := rows.Scan(&loginname); err != nil {
 			log.Fatalf("could not scan row: %v", err)
 		}
-		dbname.name = loginname
-		dbname.server = "teston"
-		fmt.Printf("found loginname: %+v\n", dbname)
 
+		newSlice =append(newSlice, loginname)
+		//  usr := {'loginName':   loginname, serverName: "test1"}
+		// newSlice = append(newSlice, usr)
+		userDetails[counter+1] = loginname
+		// userDetails["b"] = "test1"
+    	//  usr.loginName = loginname
+    	//  usr.serverName = "Server1"
+
+
+
+		// users := []User{
+        // {loginName: loginname, serverName: "Roger Roe"},}
+
+
+// 		json_data2, err := json.Marshal(usr)
+//
+// 		if err != nil {
+//
+// 			log.Fatal(err)
+// 		}
+//
+// 		fmt.Println(string(json_data2))
+
+		// dbname.name = loginname
+		// dbname.server = "teston"
+		// fmt.Printf("found loginname: %+v\n", dbname)
+		// newSlice= append(newSlice, {loginname, "testname"})
+		counter = counter + 1
 	}
+
+	// dbname.server = "Test1"
+	// dbname.name = userDetails
+
+	// jsonStr, err := json.Marshal(userDetails)
+    // if err != nil {
+    //     fmt.Printf("Error: %s", err.Error())
+    // } else {
+    //     fmt.Println(string(jsonStr))
+    // }
+
+// 	a1 := dbname{"Test1", userDetails}
+//
+// 	fmt.Println(a1)
+
+	// res, err := PrettyString(`{userDetails}`)
+    // if err != nil {
+    //     log.Fatal(err)
+    // }
+    // fmt.Println(res)
+
+
+	file, _ := json.MarshalIndent(userDetails, "", " ")
+
+	_ = ioutil.WriteFile("test.json", file, 0644)
+}
+
 
 	// s := User{}
   	// err2 = structScan(rows, &s)
@@ -107,7 +185,7 @@ func main() {
 
 
 //
-		// fmt.Printf(data)
+	// fmt.Println(newSlice)
 //
 //         var loginName newSlice
 //         err := res.Scan(&loginName.loginname)
@@ -124,7 +202,7 @@ func main() {
 // 		file, _ := json.MarshalIndent(users, "", " ")
 //
 // 		_ = ioutil.WriteFile("test.json", file, 0644)
-    }
+    // }
 
 
 // 	j, err := json.Marshal(slice)

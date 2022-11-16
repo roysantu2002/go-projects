@@ -1,1 +1,18 @@
-{}
+{
+ "1": "sa",
+ "10": "BUILTIN\\Administrators",
+ "11": "NT AUTHORITY\\SYSTEM",
+ "12": "NT AUTHORITY\\NETWORK SERVICE",
+ "13": "test_01",
+ "14": "test_02",
+ "15": "test_03",
+ "16": "test_04",
+ "2": "##MS_SQLResourceSigningCertificate##",
+ "3": "##MS_SQLReplicationSigningCertificate##",
+ "4": "##MS_SQLAuthenticatorCertificate##",
+ "5": "##MS_PolicySigningCertificate##",
+ "6": "##MS_SmoExtendedSigningCertificate##",
+ "7": "##MS_PolicyEventProcessingLogin##",
+ "8": "##MS_PolicyTsqlExecutionLogin##",
+ "9": "##MS_AgentSigningCertificate##"
+}
